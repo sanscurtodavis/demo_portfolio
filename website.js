@@ -1,25 +1,29 @@
-const hamburger = document.querySelector('.header .nav-bar .nav-list .hamburger');
-const mobile_menu = document.querySelector('.header .nav-bar .nav-list ul');
-const mobile_item = document.querySelectorAll('.header .nav-bar .nav-list ul li a');
-const header = document.querySelector('.header.container');
+// Elements caching
+const elements = {
+    hamburger: document.querySelector('.hamburger'),
+    mobileMenu: document.querySelector('.nav-list'),
+    header: document.querySelector('.header')
+};
 
-hamburger.addEventListener('click',()=> {
-    hamburger.classList.toggle('active');
-    mobile_menu.classList.toggle('active');
-})
+// Toggle mobile menu
+elements.hamburger.addEventListener('click', () => {
+    elements.hamburger.classList.toggle('active');
+    elements.mobileMenu.classList.toggle('active');
+});
 
-document.addEventListener('scroll',()=> {
-    let scroll_position = window.scrollY;
-    if(scroll_position > 250) {
-        header.style.backgroundColor = '#29323c';
-    } else {
-        header.style.backgroundColor = 'transparent';
-    }
-})
+// Change header background on scroll
+const changeHeaderBackground = () => {
+    const scrollPosition = window.scrollY;
+    elements.header.style.backgroundColor = scrollPosition > 250 ? '#29323c' : 'transparent';
+};
 
-mobile_item.forEach(item=> {
-    item.addEventListener('click',()=> {
-        hamburger.classList.toggle('active');
-        mobile_menu.classList.toggle('active');
-    })
-})
+// Scroll event listener with debounce
+const debounce = (func, delay = 100) => {
+    let timeout;
+    return () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(func, delay);
+    };
+};
+
+document.addEventListener('scroll', debounce(changeHeaderBackground));
